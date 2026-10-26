@@ -1,8 +1,7 @@
 # Pharmacokinetic-model-coursework
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/Daniel-James-Cairns-Biology/Pharmacokinetic-model-coursework)
-![GitHub open issues](https://img.shields.io/github/issues/Daniel-James-Cairns-Biology/Pharmacokinetic-model-coursework)
-![GitHub open PRs](https://img.shields.io/github/issues-pr/Daniel-James-Cairns-Biology/Pharmacokinetic-model-coursework)
+
 ![Contributors](https://img.shields.io/github/contributors/Daniel-James-Cairns-Biology/Pharmacokinetic-model-coursework)
 
 Simulate intravenous(IV) or subcutaneous(SC) dosing in a central compartment with either zero, one or two
