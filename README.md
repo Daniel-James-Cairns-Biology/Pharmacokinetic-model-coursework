@@ -1,6 +1,6 @@
 # Pharmacokinetic-model-coursework
 
-Simulate IV or SC dosing in a central compartment with any number of
+Simulate intravenous(IV) or subcutaneous(SC) dosing in a central compartment with any number of
 peripheral compartments. Protocols can be reused across models.
 
 ```bash
@@ -19,7 +19,6 @@ solution.plot()
 ```
 
 Units: amount/dose in ng, volume in mL, time in hours, clearance in mL/h,
-absorption rate in 1/h, concentration in ng/mL.
 
 Run checks with `pytest`, `pytest --cov=pk_model`, and `ruff check .`. 
 
