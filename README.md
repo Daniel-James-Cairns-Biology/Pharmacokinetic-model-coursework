@@ -22,5 +22,4 @@ Units: amount/dose in ng, volume in mL, time in hours, clearance in mL/h,
 absorption rate in 1/h, concentration in ng/mL.
 
 Run checks with `pytest`, `pytest --cov=pk_model`, and `ruff check .`. 
-"bark bark"
-"BARK"
+
