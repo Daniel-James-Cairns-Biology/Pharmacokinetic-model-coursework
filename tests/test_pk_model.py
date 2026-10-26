@@ -1,6 +1,5 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
-
-"""Unit tests for protocol definitions, model equations, and solver functionality.""" 
+"""Unit tests for protocol definitions, model equations, and solver functionality."""
 
 import unittest
 import matplotlib
