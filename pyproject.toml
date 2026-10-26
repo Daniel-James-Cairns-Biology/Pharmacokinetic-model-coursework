@@ -1,29 +1,48 @@
-[
-build-system
-]
-requires = ["setuptools", "wheel"]
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
 
-[
-project
-]
-name = "Pharmacokinetic model coursework"
-version = "0.1"
-description = "A package to analyse pharmacokinetics"
+[project]
+name = "pkmodel"
+version = "0.1.0"
+description = "A package to analyse pharmacokinetic models"
 authors = [
-    {name = "", email = ""}  #sign here 
+    {name = "Your Name", email = "your.email@example.com"}
 ]
 readme = "README.md"
+requires-python = ">=3.8"
 license = {text = "MIT"}
-dependencies = []
-
-[
-project.urls
+dependencies = [
+    "numpy",
+    "scipy",
+    "matplotlib"
 ]
-Source = "example.com"
-[
-project.scripts
-] # Define scripts here if you have any
 
-[
-project.optional-dependencies
-] # Define optional dependencies here if you have any
+[project.urls]
+Source = "https://github.com/your-org/your-repo"
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov", 
+    "ruff"
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[tool.ruff]
+target-version = "py38"
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = []
+
+exclude = [
+    ".git",
+    "__pycache__",
+    "build",
+    "dist",
+    ".venv"
+]
