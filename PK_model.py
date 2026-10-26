@@ -3,10 +3,7 @@ from scipy.integrate import solve_ivp
 
 
 class Protocol:
-    """Store IV boluses and time-limited infusions.
-
-    Amounts are in ng and times are in hours; infusion rates are in ng/h.
-    """
+    """Store boluses and time-limited infusions, independently of a model."""
 
     def __init__(self):
         self.boluses = []
@@ -37,7 +34,6 @@ class Protocol:
                    if start <= time < start + duration)
 
     def events_between(self, start, end):
-        """Return bolus and infusion-boundary times in the closed interval."""
         start, end = float(start), float(end)
         if (not all(numpy.isfinite(x) for x in (start, end)) or
                 start < 0 or end < start):
@@ -55,13 +51,14 @@ class Protocol:
 
 
 class Model:
-    """IV model with a central compartment and peripheral compartments.
+    """Central/peripheral PK model with IV or first-order SC input.
 
-    Volumes are in mL; clearances are in mL/h.
+    Volumes are in mL, clearances in mL/h, and absorption rate in 1/h.
     """
 
     def __init__(self, central_volume, clearance, peripheral_volumes=None,
-                 intercompartmental_clearances=None):
+                 intercompartmental_clearances=None, route="iv",
+                 absorption_rate=None, name="PK model"):
         self.central_volume = float(central_volume)
         self.clearance = float(clearance)
         self.peripheral_volumes = (
@@ -71,8 +68,7 @@ class Model:
             intercompartmental_clearances
             if intercompartmental_clearances is not None else []
         )
-        if (not numpy.isfinite(self.central_volume) or
-                self.central_volume <= 0):
+        if not numpy.isfinite(self.central_volume) or self.central_volume <= 0:
             raise ValueError("central volume must be finite and positive")
         if not numpy.isfinite(self.clearance) or self.clearance < 0:
             raise ValueError("clearance must be finite and non-negative")
@@ -85,29 +81,56 @@ class Model:
         if any(not numpy.isfinite(q) or q < 0
                for q in self.intercompartmental_clearances):
             raise ValueError("intercompartmental clearances must be non-negative")
-        self.state_names = ["central"] + [
+        if not isinstance(route, str):
+            raise ValueError("route must be 'iv' or 'sc'")
+        route = route.lower()
+        if route in ("iv", "intravenous"):
+            self.route = "iv"
+            self.absorption_rate = None
+        elif route in ("sc", "subcutaneous"):
+            if absorption_rate is None:
+                raise ValueError("SC models need a positive absorption rate")
+            self.absorption_rate = float(absorption_rate)
+            if not numpy.isfinite(self.absorption_rate) or self.absorption_rate <= 0:
+                raise ValueError("SC models need a positive absorption rate")
+            self.route = "sc"
+        else:
+            raise ValueError("route must be 'iv' or 'sc'")
+        if not isinstance(name, str) or not name.strip():
+            raise ValueError("model name must not be empty")
+        self.name = name
+        self.central_index = 1 if self.route == "sc" else 0
+        self.state_names = ["central"]
+        if self.route == "sc":
+            self.state_names.insert(0, "depot")
+        self.state_names.extend(
             f"peripheral_{i + 1}" for i in range(len(self.peripheral_volumes))
-        ]
+        )
 
     def rhs(self, time, amounts, dose_rate=0):
-        """Return central and peripheral amount derivatives."""
+        """Return amount derivatives for each compartment."""
         change = numpy.zeros(len(self.state_names))
-        central_concentration = amounts[0] / self.central_volume
-        change[0] = dose_rate - self.clearance * central_concentration
-        for i, (volume, clearance) in enumerate(zip(
-                self.peripheral_volumes,
-                self.intercompartmental_clearances)):
-            peripheral = i + 1
+        central = self.central_index
+        if self.route == "sc":
+            absorbed = self.absorption_rate * amounts[0]
+            change[0] = dose_rate - absorbed
+            central_input = absorbed
+        else:
+            central_input = dose_rate
+
+        central_concentration = amounts[central] / self.central_volume
+        change[central] = central_input - self.clearance * central_concentration
+        for i, volume in enumerate(self.peripheral_volumes):
+            peripheral = central + i + 1
             peripheral_concentration = amounts[peripheral] / volume
-            exchange = clearance * (
+            exchange = self.intercompartmental_clearances[i] * (
                 central_concentration - peripheral_concentration
             )
-            change[0] -= exchange
+            change[central] -= exchange
             change[peripheral] += exchange
         return change
 
     def solve(self, protocol, times):
-        """Return amounts by compartment at each sample time."""
         if not isinstance(protocol, Protocol):
             raise TypeError("protocol must be a Protocol instance")
         times = numpy.asarray(times, dtype=float)
@@ -118,14 +141,13 @@ class Model:
 
         state = numpy.zeros(len(self.state_names))
         state[0] = protocol.dose_at(0)
-        answer = numpy.zeros((len(state), len(times)))
+        amounts = numpy.zeros((len(state), len(times)))
         if times[0] == 0:
-            answer[:, 0] = state
-
+            amounts[:, 0] = state
         now = 0.0
-        ends = set(protocol.events_between(now, times[-1]))
-        ends.update(times)
-        for end in sorted(ends):
+        event_times = set(protocol.events_between(now, times[-1]))
+        event_times.update(times)
+        for end in sorted(event_times):
             if end <= now:
                 continue
             indexes = numpy.where((times > now) & (times <= end))[0]
@@ -134,7 +156,7 @@ class Model:
                 samples = numpy.append(samples, end)
             rate = protocol.rate_at((now + end) / 2)
             result = solve_ivp(
-                lambda time, amounts: self.rhs(time, amounts, rate),
+                lambda time, values: self.rhs(time, values, rate),
                 (now, end),
                 state,
                 t_eval=samples,
@@ -143,20 +165,86 @@ class Model:
             )
             if not result.success:
                 raise RuntimeError(result.message)
-            answer[:, indexes] = result.y[:, :len(indexes)]
+            amounts[:, indexes] = result.y[:, :len(indexes)]
             state = result.y[:, -1].copy()
             now = end
             state[0] += protocol.dose_at(end)
             exact_time = numpy.where(times == end)[0]
             if len(exact_time):
-                answer[:, exact_time[0]] = state
-        return answer
+                amounts[:, exact_time[0]] = state
+        return Solution(self, times, amounts)
+
+
+class Solution:
+    """Store model results and plot amounts or concentrations."""
+
+    def __init__(self, model, times, amounts):
+        self.model = model
+        self.times = times
+        self.amounts = amounts
+
+    def amount(self, compartment="central"):
+        return self.amounts[self.model.state_names.index(compartment)]
+
+    def concentration(self, compartment="central"):
+        index = self.model.state_names.index(compartment)
+        if compartment == "depot":
+            raise ValueError("the depot has no volume, so it has no concentration")
+        if compartment == "central":
+            volume = self.model.central_volume
+        else:
+            volume = self.model.peripheral_volumes[
+                index - self.model.central_index - 1
+            ]
+        return self.amount(compartment) / volume
+
+    def plot(self, quantity="concentration", compartments=None):
+        import matplotlib.pyplot as plt
+
+        if quantity not in ("amount", "concentration"):
+            raise ValueError("quantity must be 'amount' or 'concentration'")
+        if compartments is None:
+            compartments = self.model.state_names
+            if quantity == "concentration":
+                compartments = [
+                    name for name in compartments if name != "depot"
+                ]
+        else:
+            compartments = tuple(compartments)
+        if not compartments:
+            raise ValueError("choose at least one compartment to plot")
+
+        for compartment in compartments:
+            if quantity == "amount":
+                values = self.amount(compartment)
+            else:
+                values = self.concentration(compartment)
+            plt.plot(
+                self.times,
+                values,
+                label=f"{self.model.name}: {compartment}",
+            )
+        plt.xlabel("Time [h]")
+        plt.ylabel("Drug amount [ng]" if quantity == "amount"
+                   else "Concentration [ng/mL]")
+        plt.legend()
+        return plt.gca()
+
+    def compare(self, other, quantity="concentration", compartments=None):
+        """Plot this result and another result on the same axes."""
+        self.plot(quantity, compartments)
+        other.plot(quantity, compartments)
+        return self
 
 
 if __name__ == "__main__":
+    import matplotlib.pyplot as plt
+
     sample_times = numpy.linspace(0, 24, 241)
-    protocol = Protocol().add_bolus(1000).add_infusion(50, start=2, duration=4)
-    model = Model(3000, 300, [5000, 8000], [200, 100])
-    amounts = model.solve(protocol, sample_times)
-    for name, amount in zip(model.state_names, amounts[:, -1]):
-        print(f"{name} amount at 24 h: {amount:.2f} ng")
+    protocol = Protocol().add_bolus(1000)
+    iv_model = Model(3000, 300, name="IV")
+    sc_model = Model(3000, 300, route="sc", absorption_rate=0.8, name="SC")
+    iv_solution = iv_model.solve(protocol, sample_times)
+    sc_solution = sc_model.solve(protocol, sample_times)
+    iv_solution.compare(sc_solution, compartments=["central"])
+    plt.show()
