@@ -53,8 +53,8 @@ $$\frac{\text{d}q_2}{\text{d}t} = Q_2\left(\frac{q_c}{V_c}-\frac{q_2}{V_2}\right
 
 and for the SC model, the system is
 
-$$\frac{\text{d}q_0}{\text{d}t} = \mathcal{D}(t) - k_a q_0, $$
-$$\frac{\text{d}q_c}{\text{d}t} = k_a q_0 - \frac{q_c}{V_c}C - Q_1\left(\frac{q_c}{V_c}-\frac{q_1}{V_1}\right) - Q_2\left(\frac{q_c}{V_c}-\frac{q_2}{V_2}\right), $$
+$$\frac{\text{d}q_s}{\text{d}t} = \mathcal{D}(t) - k_a q_s, $$
+$$\frac{\text{d}q_c}{\text{d}t} = k_a q_s - \frac{q_c}{V_c}C - Q_1\left(\frac{q_c}{V_c}-\frac{q_1}{V_1}\right) - Q_2\left(\frac{q_c}{V_c}-\frac{q_2}{V_2}\right), $$
 $$\frac{\text{d}q_1}{\text{d}t} = Q_1\left(\frac{q_c}{V_c}-\frac{q_1}{V_1}\right), $$
 $$\frac{\text{d}q_2}{\text{d}t} = Q_2\left(\frac{q_c}{V_c}-\frac{q_2}{V_2}\right). $$
 
