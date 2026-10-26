@@ -145,7 +145,7 @@ class Model:
 
     @property
     def central_index(self):
-    """Calculate the peripheral compartment concentration exchange."""
+        """Calculate the peripheral compartment concentration exchange."""
         if self.route == "sc":
             return 1
         return 0
