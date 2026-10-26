@@ -221,7 +221,7 @@ class Model:
 
 
 class Solution:
-    """Stores and visualises results of the PK model simulation"""F
+    """Stores and visualises results of the PK model simulation"""
     def __init__(self, model, times, amounts):
         self.model = model
         self.times = times
