@@ -6,8 +6,35 @@ build-backend = "setuptools.build_meta"
 name = "pkmodel"
 version = "0.1.0"
 description = "A package to analyse pharmacokinetic models"
-authors = [
-    {name = "Your Name", email = "your.email@example.com"}
+authors = [{ name = "not given, no thanks!"}]
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+dependencies = ["numpy", "scipy", "matplotlib"]
+
+[project.optional-dependencies]
+dev = ["pytest", "pytest-cov", "ruff"]
+
+[tool.setuptools]
+py-modules = ["pk_model"]
+
+[tool.ruff]
+target-version = "py38"
+line-length = 88
+exclude = [".git", "__pycache__", "build", "dist", ".venv"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = []
+
+[tool.coverage.run]
+branch = true
+source = ["pk_model"]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 85
+
 ]
 readme = "README.md"
 requires-python = ">=3.8"
@@ -17,27 +44,6 @@ dependencies = [
     "scipy",
     "matplotlib"
 ]
-
-[project.urls]
-Source = "https://github.com/your-org/your-repo"
-
-[project.optional-dependencies]
-dev = [
-    "pytest",
-    "pytest-cov", 
-    "ruff"
-]
-
-[tool.setuptools.packages.find]
-where = ["."]
-
-[tool.ruff]
-target-version = "py38"
-line-length = 88
-
-[tool.ruff.lint]
-select = ["E", "F", "W", "I"]
-ignore = []
 
 exclude = [
     ".git",
