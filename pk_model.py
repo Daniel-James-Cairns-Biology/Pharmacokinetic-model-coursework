@@ -1,9 +1,8 @@
 """Pharmacokinetics model implementation for subcutaneous and intravenous dosage"""
 
+import matplotlib.pyplot as plt
 import numpy
 from scipy.integrate import solve_ivp
-
-import matplotlib.pyplot as plt
 
 
 class Protocol:
@@ -46,7 +45,8 @@ class Protocol:
         return rate
 
     def events_between(self, start, end):
-        """Return a sorted list of unique dose event times within the specified range."""
+        """Return a sorted list of unique dose event times
+            within the specified range."""
         start, end = float(start), float(end)
         if (not all(numpy.isfinite(x) for x in (start, end)) or
                 start < 0 or end < start):
@@ -83,11 +83,13 @@ class Model:
         Args:
             central_volume (float): Volume of the central compartment.
             clearance (float): Elimination clearance rate from central compartment.
-            peripheral_volumes (list of float, optional): Volumes of peripheral compartments.
-            intercompartmental_clearances (list of float, optional): Clearance rates 
+            peripheral_volumes (list of float, optional): Volumes of
+                peripheral compartments.
+            intercompartmental_clearances (list of float, optional): Clearance rates
                 between central and peripheral compartments.
             route (str, optional): Dosing route, either 'iv' or 'sc'. Defaults to 'iv'.
-            absorption_rate (float, optional): Absorption rate constant for subcutaneous route.
+            absorption_rate (float, optional): Absorption rate constant for
+                subcutaneous route.
             name (str, optional): Name of the model. Defaults to "PK model".
         """
         if not isinstance(route, str):
@@ -151,7 +153,8 @@ class Model:
         return 0
 
     def rhs(self, _time, amounts, dose_rate=0):
-        """Calculate the system of differential equations (right-hand side) at time t."""
+        """Calculate the system of differential equations
+            (right-hand side) at time t."""
         change = numpy.zeros(len(self.state_names))
         central = self.central_index
 
@@ -180,7 +183,8 @@ class Model:
         return change
     # pylint: disable=too-many-branches
     def solve(self, protocol, times, initial=None):
-        """Solve the PK model differential equations for a given protocol and timeframe."""
+        """Solve the PK model differential equations for a given
+            protocol and timeframe."""
         times = numpy.asarray(times, dtype=float)
         if (times.ndim != 1 or len(times) < 2 or
                 not numpy.all(numpy.isfinite(times)) or
