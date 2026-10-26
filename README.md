@@ -1,6 +1,6 @@
 # Pharmacokinetic-model-coursework
 
-Simulate intravenous(IV) or subcutaneous(SC) dosing in a central compartment with any number of
+Simulate intravenous(IV) or subcutaneous(SC) dosing in a central compartment with either zero, one or two
 peripheral compartments. Protocols can be reused across models.
 
 ```bash
