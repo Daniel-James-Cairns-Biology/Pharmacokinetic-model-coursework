@@ -9,10 +9,10 @@ description = "A package to analyse pharmacokinetic models"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "Unlicense" }
-dependencies = ["numpy", "scipy"]
+dependencies = ["numpy", "scipy", "matplotlib"]
 
 [project.optional-dependencies]
-dev = ["pytest", "pytest-cov", "ruff", "matplotlib"]
+dev = ["pytest", "pytest-cov", "ruff"]
 
 [tool.setuptools]
 py-modules = ["pk_model"]
