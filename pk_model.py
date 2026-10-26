@@ -1,5 +1,9 @@
+"""Pharmacokinetics model implementation for subcutaneous and intravenous dosage"""
+
 import numpy
 from scipy.integrate import solve_ivp
+
+import matplotlib.pyplot as plt
 
 
 class Protocol:
@@ -45,10 +49,10 @@ class Protocol:
                 start < 0 or end < start):
             raise ValueError("give a valid time range")
         events = []
-        for amount, dose_time in self.boluses:
+        for _amount, dose_time in self.boluses:
             if start <= dose_time <= end:
                 events.append(dose_time)
-        for rate, infusion_start, duration in self.infusions:
+        for _rate, infusion_start, duration in self.infusions:
             infusion_end = infusion_start + duration
             if start <= infusion_start <= end:
                 events.append(infusion_start)
@@ -62,7 +66,7 @@ class Model:
 
     route="sc" adds an absorption depot.
     """
-
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
     def __init__(self, central_volume=1, clearance=0,
                  peripheral_volumes=None, intercompartmental_clearances=None,
                  route="iv", absorption_rate=None, name="PK model"):
@@ -124,7 +128,7 @@ class Model:
             return 1
         return 0
 
-    def rhs(self, time, amounts, dose_rate=0):
+    def rhs(self, _time, amounts, dose_rate=0):
         change = numpy.zeros(len(self.state_names))
         central = self.central_index
 
@@ -141,9 +145,9 @@ class Model:
         )
 
         # Each peripheral compartment exchanges drug only with the central one.
-        for i in range(len(self.peripheral_volumes)):
+        for i, p_vol in enumerate(self.peripheral_volumes):
             p = central + i + 1
-            peripheral_conc = amounts[p] / self.peripheral_volumes[i]
+            peripheral_conc = amounts[p] / p_vol
             exchange = self.intercompartmental_clearances[i] * (
                 central_conc - peripheral_conc
             )
@@ -151,7 +155,7 @@ class Model:
             change[p] += exchange
 
         return change
-
+    # pylint: disable=too-many-branches
     def solve(self, protocol, times, initial=None):
         times = numpy.asarray(times, dtype=float)
         if (times.ndim != 1 or len(times) < 2 or
@@ -217,6 +221,7 @@ class Model:
 
 
 class Solution:
+    """Stores and visualises results of the PK model simulation"""F
     def __init__(self, model, times, amounts):
         self.model = model
         self.times = times
@@ -240,7 +245,6 @@ class Solution:
 
     def plot(self, quantity="concentration", compartments=None):
         """Plot the amounts or concentrations."""
-        import matplotlib.pyplot as plt
 
         if quantity not in ("amount", "concentration"):
             raise ValueError("quantity should be 'amount' or 'concentration'")
