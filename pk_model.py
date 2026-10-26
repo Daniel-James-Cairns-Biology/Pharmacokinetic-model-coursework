@@ -88,7 +88,7 @@ class Model:
             route (str, optional): Dosing route, either 'iv' or 'sc'. Defaults to 'iv'.
             absorption_rate (float, optional): Absorption rate constant for subcutaneous route.
             name (str, optional): Name of the model. Defaults to "PK model".
-        """        
+        """
         if not isinstance(route, str):
             raise ValueError("route should be 'iv' or 'sc'")
         self.central_volume = float(central_volume)
