@@ -1,6 +1,7 @@
 """Unit tests for protocol definitions, model equations, and solver functionality.""" 
 
 import unittest
+
 import matplotlib
 import numpy
 
