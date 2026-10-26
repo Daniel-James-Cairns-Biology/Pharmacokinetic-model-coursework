@@ -18,7 +18,8 @@ solution = model.solve(protocol, numpy.linspace(0, 24, 241))
 solution.plot()
 ```
 
-$\sum_{i=0}^\infty \frac{1}{i^2} = \frac{\pi^2}{6}$
+$\sum_{i=0}^\infty i^-2 = \frac{\pi^2}{6}$
+
 Units: amount/dose in ng, volume in mL, time in hours, clearance in mL/h,
 
 Run checks with `pytest`, `pytest --cov=pk_model`, and `ruff check .`. 
