@@ -1,5 +1,8 @@
 # Pharmacokinetic-model-coursework
 
+![Pytest & Ruff](https://github.com/Daniel-James-Cairns-Biology/Pharmacokinetic-model-coursework/actions/workflows/pytest.yml/badge.svg)
+![Pylint](https://github.com/Daniel-James-Cairns-Biology/Pharmacokinetic-model-coursework/actions/workflows/pylint.yml/badge.svg)
+
 Simulate intravenous(IV) or subcutaneous(SC) dosing in a central compartment with either zero, one or two
 peripheral compartments. Protocols can be reused across models.
 
