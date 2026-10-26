@@ -70,13 +70,13 @@ class Model:
     route="sc" adds an absorption depot.
     """
     # pylint: disable=too-many-arguments,too-many-positional-arguments
-    def __init__(self, 
-                 central_volume=1, 
+    def __init__(self,
+                 central_volume=1,
                  clearance=0,
-                 peripheral_volumes=None, 
+                 peripheral_volumes=None,
                  intercompartmental_clearances=None,
-                 route="iv", 
-                 absorption_rate=None, 
+                 route="iv",
+                 absorption_rate=None,
                  name="PK model"):
         """Initialize the pharmacokinetic model parameters and compartments.
 
@@ -84,7 +84,8 @@ class Model:
             central_volume (float): Volume of the central compartment.
             clearance (float): Elimination clearance rate from central compartment.
             peripheral_volumes (list of float, optional): Volumes of peripheral compartments.
-            intercompartmental_clearances (list of float, optional): Clearance rates between central and peripheral compartments.
+            intercompartmental_clearances (list of float, optional): Clearance rates 
+                between central and peripheral compartments.
             route (str, optional): Dosing route, either 'iv' or 'sc'. Defaults to 'iv'.
             absorption_rate (float, optional): Absorption rate constant for subcutaneous route.
             name (str, optional): Name of the model. Defaults to "PK model".
@@ -144,6 +145,7 @@ class Model:
 
     @property
     def central_index(self):
+    """Calculate the peripheral compartment concentration exchange."""
         if self.route == "sc":
             return 1
         return 0
@@ -221,7 +223,7 @@ class Model:
                 samples = numpy.append(samples, end)
             rate = protocol.rate_at((now + end) / 2)
             result = solve_ivp(
-                lambda t, y, r=rate: self.rhs(t, y, r)
+                lambda t, y, r=rate: self.rhs(t, y, r),
                 (now, end),
                 state,
                 t_eval=samples,
