@@ -1,0 +1,29 @@
+[
+build-system
+]
+requires = ["setuptools", "wheel"]
+
+[
+project
+]
+name = "Pharmacokinetic model coursework"
+version = "0.1"
+description = "A package to analyse pharmacokinetics"
+authors = [
+    {name = "", email = ""}  #sign here 
+]
+readme = "README.md"
+license = {text = "MIT"}
+dependencies = []
+
+[
+project.urls
+]
+Source = "example.com"
+[
+project.scripts
+] # Define scripts here if you have any
+
+[
+project.optional-dependencies
+] # Define optional dependencies here if you have any
