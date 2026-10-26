@@ -1,14 +1,16 @@
-import unittest
+"""Unit tests for protocol definitions, model equations, and solver functionality.""" 
 
+import unittest
 import matplotlib
 import numpy
 
-matplotlib.use("Agg")
-
 from pk_model import Model, Protocol
+
+matplotlib.use("Agg")
 
 
 class ProtocolTests(unittest.TestCase):
+    """Tests for the Protocol class dosing and event management."""
     def test_boluses_and_infusions(self):
         doses = Protocol().add_bolus(5).add_bolus(7, 2)
         self.assertEqual(doses.dose_at(0), 5)
@@ -28,6 +30,7 @@ class ProtocolTests(unittest.TestCase):
 
 
 class ModelTests(unittest.TestCase):
+    """Tests for the Model class ODE solvers and compartment dynamics."""
     def test_iv_bolus_matches_expected_curve(self):
         solution = Model(10, 2).solve(Protocol().add_bolus(100), [0, 1, 2])
         expected = 100 * numpy.exp(-0.2 * numpy.array([0, 1, 2]))
