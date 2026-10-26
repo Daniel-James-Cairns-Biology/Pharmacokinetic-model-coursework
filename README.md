@@ -1,4 +1,4 @@
-## Pharmacokinetic-model-coursework
+# Pharmacokinetic-model-coursework
 
 Simulate intravenous(IV) or subcutaneous(SC) dosing in a central compartment with either zero, one or two
 peripheral compartments. Protocols can be reused across models.
@@ -19,7 +19,7 @@ solution.plot()
 ```
 Run checks with `pytest`, `pytest --cov=pk_model`, and `ruff check .`. 
 
-# Variables
+## Variables
 
 Our variables are just the drug density in each compartment. We denote them as:
 
@@ -29,7 +29,7 @@ Our variables are just the drug density in each compartment. We denote them as:
 And for the SC model, we also have:
 * $q_s$ [ng] - drug density in 'skin' 
 
-# Input Parameters
+## Input Parameters
 
 The user will be prompted to input various parameters in order to specify the model. For the IV model, these are:
 
@@ -43,7 +43,7 @@ The user will be prompted to input various parameters in order to specify the mo
 And for the SC model, we also have:
 * $k_a$ [1/h] - subcutaneous absorption rate 
 
-# ODE System
+## ODE System
 
 For the IV model, our ODE system is 
 
