@@ -12,7 +12,7 @@ license = { text = "Unlicense" }
 dependencies = ["numpy", "scipy"]
 
 [project.optional-dependencies]
-dev = ["pytest", "pytest-cov", "ruff"]
+dev = ["pytest", "pytest-cov", "ruff", "matplotlib"]
 
 [tool.setuptools]
 py-modules = ["pk_model"]
