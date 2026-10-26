@@ -33,10 +33,12 @@ class Protocol:
         return self
 
     def dose_at(self, time):
+        """Calculate the total bolus dose amount delivered at a specific time."""
         return sum(amount for amount, dose_time in self.boluses
                    if dose_time == time)
 
     def rate_at(self, time):
+        """Calculate the continuous infusion rate active at a given time."""
         rate = 0
         for amount_per_hour, start, duration in self.infusions:
             if start <= time < start + duration:
@@ -44,6 +46,7 @@ class Protocol:
         return rate
 
     def events_between(self, start, end):
+        """Return a sorted list of unique dose event times within the specified range."""
         start, end = float(start), float(end)
         if (not all(numpy.isfinite(x) for x in (start, end)) or
                 start < 0 or end < start):
@@ -67,9 +70,25 @@ class Model:
     route="sc" adds an absorption depot.
     """
     # pylint: disable=too-many-arguments,too-many-positional-arguments
-    def __init__(self, central_volume=1, clearance=0,
-                 peripheral_volumes=None, intercompartmental_clearances=None,
-                 route="iv", absorption_rate=None, name="PK model"):
+    def __init__(self, 
+                 central_volume=1, 
+                 clearance=0,
+                 peripheral_volumes=None, 
+                 intercompartmental_clearances=None,
+                 route="iv", 
+                 absorption_rate=None, 
+                 name="PK model"):
+        """Initialize the pharmacokinetic model parameters and compartments.
+
+        Args:
+            central_volume (float): Volume of the central compartment.
+            clearance (float): Elimination clearance rate from central compartment.
+            peripheral_volumes (list of float, optional): Volumes of peripheral compartments.
+            intercompartmental_clearances (list of float, optional): Clearance rates between central and peripheral compartments.
+            route (str, optional): Dosing route, either 'iv' or 'sc'. Defaults to 'iv'.
+            absorption_rate (float, optional): Absorption rate constant for subcutaneous route.
+            name (str, optional): Name of the model. Defaults to "PK model".
+        """        
         if not isinstance(route, str):
             raise ValueError("route should be 'iv' or 'sc'")
         self.central_volume = float(central_volume)
@@ -115,6 +134,7 @@ class Model:
 
     @property
     def state_names(self):
+        """Return the list of state names for the model compartments."""
         names = ["central"]
         if self.route == "sc":
             names.insert(0, "depot")
@@ -129,6 +149,7 @@ class Model:
         return 0
 
     def rhs(self, _time, amounts, dose_rate=0):
+        """Calculate the system of differential equations (right-hand side) at time t."""
         change = numpy.zeros(len(self.state_names))
         central = self.central_index
 
@@ -157,6 +178,7 @@ class Model:
         return change
     # pylint: disable=too-many-branches
     def solve(self, protocol, times, initial=None):
+        """Solve the PK model differential equations for a given protocol and timeframe."""
         times = numpy.asarray(times, dtype=float)
         if (times.ndim != 1 or len(times) < 2 or
                 not numpy.all(numpy.isfinite(times)) or
@@ -199,7 +221,7 @@ class Model:
                 samples = numpy.append(samples, end)
             rate = protocol.rate_at((now + end) / 2)
             result = solve_ivp(
-                lambda t, y: self.rhs(t, y, rate),
+                lambda t, y, r=rate: self.rhs(t, y, r)
                 (now, end),
                 state,
                 t_eval=samples,
