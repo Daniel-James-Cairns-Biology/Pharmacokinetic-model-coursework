@@ -6,7 +6,7 @@ import webbrowser
 from pathlib import Path
 
 import matplotlib.pyplot as plt
-import numpy
+import numpy as np
 
 from pk_model import Model, Protocol
 
@@ -31,8 +31,18 @@ def run_model_demo():
         cl = float(input("Input clearance rate (ml/h): "))
         if model_type == "sc": 
             k_a = float(input("Enter absorption rate (1/h): "))
-        v_i = float(input(f"Enter compartment volume (ml): "))
-        q_i = float(input(f"Enter intercompartmental clearance (ml/h): "))
+        else: 
+            k_a = None
+        num_periph = int(input("Number of peripheral compartments (0, 1, or 2) [1]: ") or 1)
+        
+        v_p = []
+        q_p = []
+        
+        for i in range(num_periph):
+            v_i = float(input(f"Peripheral {i+1} Volume V_{i+1} (mL) [1000]: ") or 1000)
+            q_i = float(input(f"Peripheral {i+1} Clearance Q_{i+1} (mL/h) [100]: ") or 100)
+            v_p.append(v_i)
+            q_p.append(q_i)
         dose = float(input("Enter bolus dose (ng): "))
         duration = float(input("Enter simulation duration (hrs): "))
         protocol = Protocol().add_bolus(dose)
@@ -42,11 +52,10 @@ def run_model_demo():
             clearance=cl,
             peripheral_volumes=v_p,
             intercompartmental_clearances=q_p,
+            route=model_type,
             absorption_rate=k_a,
-            model_type=model_type,
         )
         times = np.linspace(0, duration, int(duration * 10) + 1)    
-        iv_solution = iv_model.solve(protocol, times)
         solution = model.solve(protocol, times)
         print("Plotting...")
         solution.plot()
@@ -54,15 +63,16 @@ def run_model_demo():
             2, 1, figsize=(10, 8), sharex=True
         )
         plt.sca(concentration_axis)
-        compartments = ["central", "peripheral_1", "peripheral_2"]
-        iv_solution.plot(compartments=compartments)
-        sc_solution.plot(compartments=compartments)
+        compartments = ["central"] + [f"peripheral_{i+1}" for i in range(num_periph)]        
+        solution.plot(compartments=compartments)
+
         concentration_axis.set_title("IV and subcutaneous concentration profiles")
     
-        plt.sca(depot_axis)
-        sc_solution.plot(quantity="amount", compartments=["depot"])
-        depot_axis.set_title("Subcutaneous absorption depot")
-        depot_axis.set_xlabel("Time [h]")
+        if model_type == "sc" or k_a is not None:
+            plt.sca(depot_axis)
+            solution.plot(quantity="amount", compartments=["depot"])
+            depot_axis.set_title("Subcutaneous absorption depot")
+            depot_axis.set_xlabel("Time [h]")
     
         figure.tight_layout()
         plot_path = PROJECT_DIR / "pk_model_demo.png"
@@ -72,7 +82,7 @@ def run_model_demo():
         plt.close()
     except Exception as e: 
         print("Something went wrong, play snake instead!")
-        run_game("snake")
+        run_game("snake.py")
     
 
 def run_game(script):
