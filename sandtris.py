@@ -13,9 +13,6 @@ COLORS = (
     ("cyan", "#38bdf8"),
     ("yellow", "#facc15"),
     ("purple", "#c084fc"),
-    ("green", "#4ade80"),
-    ("pink", "#fb7185"),
-    ("blue", "#60a5fa"),
     ("orange", "#fb923c"),
 )
 BOARD_COLOR = "#111827"
