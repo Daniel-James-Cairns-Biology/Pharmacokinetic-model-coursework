@@ -45,7 +45,8 @@ def run_model_demo():
             absorption_rate=k_a,
             model_type=model_type,
         )
-        times = np.linspace(0, duration, int(duration * 10) + 1)    iv_solution = iv_model.solve(protocol, times)
+        times = np.linspace(0, duration, int(duration * 10) + 1)    
+        iv_solution = iv_model.solve(protocol, times)
         solution = model.solve(protocol, times)
         print("Plotting...")
         solution.plot()
