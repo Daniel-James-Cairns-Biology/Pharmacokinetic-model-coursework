@@ -10,7 +10,10 @@ peripheral compartments. Protocols can be reused across models.
 python -m pip install .
 python -m pip install ".[dev]"
 ```
-
+if you wish to play snake then follow this installation
+```bash
+python -m pip install ".[snake]"
+```
 ```python
 import numpy
 from pk_model import Model, Protocol
