@@ -15,9 +15,6 @@ dependencies = ["numpy", "scipy", "matplotlib"]
 [project.optional-dependencies]
 dev = ["pytest", "pytest-cov", "ruff"]
 
-[tool.setuptools]
-py-modules = ["pk_model"]
-
 [tool.ruff]
 target-version = "py38"
 line-length = 88
