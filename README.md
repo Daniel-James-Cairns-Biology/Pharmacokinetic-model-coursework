@@ -46,6 +46,16 @@ The user will be prompted to input various parameters in order to specify the mo
 And for the SC model, we also have:
 * $k_a$ [1/h] - subcutaneous absorption rate 
 
+## Diagram
+
+This is the diagram for the intravenous (IV) model,
+
+<img width="635" height="179" alt="Screenshot 2026-10-27 at 14 54 02" src="https://github.com/user-attachments/assets/7ebab58b-4de6-4f8b-81c9-ae3838adbdd7" />
+
+and this is the diagram for the subcutaneous (SC) model.
+
+<img width="806" height="205" alt="Screenshot 2026-10-27 at 14 43 23" src="https://github.com/user-attachments/assets/4bb8e220-bdea-456d-91e0-4b54daf09c83" />
+
 ## ODE System
 
 For the IV model, our ODE system is 
