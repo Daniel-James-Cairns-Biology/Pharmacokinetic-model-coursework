@@ -5,6 +5,8 @@ import tkinter as tk
 
 CELL_SIZE = 5
 PARTICLES_PER_BLOCK = 5
+PHYSICS_STEPS_PER_TICK = 3
+TICK_MILLISECONDS = 75
 BLOCK_WIDTH = 12
 BLOCK_HEIGHT = 22
 BOARD_WIDTH = BLOCK_WIDTH * PARTICLES_PER_BLOCK
@@ -27,6 +29,15 @@ SHAPES = (
     ((0, 0), (0, 1), (1, 1), (2, 1)),
     ((2, 0), (0, 1), (1, 1), (2, 1)),
 )
+
+
+def lighten_color(color, amount=0.55):
+    """Blend a hex color toward white for a glass-like reflective edge."""
+    channels = [int(color[index:index + 2], 16) for index in (1, 3, 5)]
+    lighter = [
+        round(channel + (255 - channel) * amount) for channel in channels
+    ]
+    return "#" + "".join(f"{channel:02x}" for channel in lighter)
 
 
 def settle_sand(board, rng=random):
@@ -160,6 +171,7 @@ class Sandtris:
         self.particle_count = 0
         self.paused = False
         self.game_over = False
+        self.fall_counter = 0
         self.active = self.new_piece()
         self.update_labels()
         self.draw()
@@ -241,17 +253,24 @@ class Sandtris:
         if self.game_over:
             return
         if not self.paused:
-            settle_sand(self.board)
+            for _ in range(PHYSICS_STEPS_PER_TICK):
+                settle_sand(self.board)
             self.clear_completed_paths()
-            if self.fits(self.active["cells"], self.active["x"], self.active["y"] + 1):
-                self.active["y"] += 1
-            else:
-                self.lock_piece()
+            self.fall_counter += 1
+            drop_every = max(2, 6 - self.lines // 10)
+            if self.fall_counter >= drop_every:
+                self.fall_counter = 0
+                if self.fits(
+                    self.active["cells"], self.active["x"], self.active["y"] + 1
+                ):
+                    self.active["y"] += 1
+                else:
+                    self.lock_piece()
             self.draw()
         self.schedule_tick()
 
     def schedule_tick(self):
-        speed = max(80, 500 - (self.lines // 5) * 35)
+        speed = max(45, TICK_MILLISECONDS - (self.lines // 5) * 5)
         self.timer_id = self.root.after(speed, self.tick)
 
     def lock_piece(self):
@@ -339,15 +358,25 @@ class Sandtris:
 
     def draw_particle(self, x, y, color):
         left, top = x * CELL_SIZE, y * CELL_SIZE
-        self.canvas.create_rectangle(
-            left + 0.5,
-            top + 0.5,
-            left + CELL_SIZE - 0.5,
-            top + CELL_SIZE - 0.5,
+        inset = 0.45
+        self.canvas.create_oval(
+            left + inset,
+            top + inset,
+            left + CELL_SIZE - inset,
+            top + CELL_SIZE - inset,
             fill=color,
-            outline=BOARD_COLOR,
-            width=0.4,
+            outline=lighten_color(color),
+            width=1,
         )
+        if (x + y) % 3 == 0:
+            self.canvas.create_oval(
+                left + 1.1,
+                top + 1.0,
+                left + 2.2,
+                top + 2.1,
+                fill="#ffffff",
+                outline="",
+            )
 
 
 def main():
