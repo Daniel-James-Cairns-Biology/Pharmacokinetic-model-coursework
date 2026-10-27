@@ -21,6 +21,7 @@ dev = [
     "pytest-cov",
     "ruff",
 ]
+snake = ["pygame"]
 
 [tool.setuptools]
 py-modules = ["pk_model"]
