@@ -5,6 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "pkmodel"
 version = "0.1.0"
+py-modules = ["pk_model", "snake"]
 description = "A package to analyse pharmacokinetic models"
 readme = "README.md"
 requires-python = "3.12"
