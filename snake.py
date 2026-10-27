@@ -18,7 +18,7 @@ class Food:
         x = round(random.randrange(0, screen_width - size) / size) * size
         y = round(random.randrange(0, screen_height - size) / size) * size
         self.bone = Bone((x, y), size)
-    def draw(self, screen, color=(150, 150, 100)): 
+    def draw(self, screen, color=(0, 200, 0)): 
         self.bone.draw(screen, color)
 
 
@@ -27,7 +27,7 @@ class Snake:
         self.body = [Bone(start_pos, size)]
         self.direction = [0, 0]
         self.size = size
-    def draw(self, screen, color=(200, 100, 150)): 
+    def draw(self, screen, color=(255, 0, 127)): 
         for bone in self.body: 
             bone.draw(screen, color)
     def get_pos(self): 
