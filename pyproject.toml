@@ -16,7 +16,7 @@ dependencies = ["numpy", "scipy", "matplotlib", "pygame"]
 dev = ["pytest", "pytest-cov", "ruff"]
 
 [tool.setuptools]
-py-modules = ["pk_model"]
+py-modules = ["pk_model", "snake"]
 
 [tool.ruff]
 target-version = "py38"
