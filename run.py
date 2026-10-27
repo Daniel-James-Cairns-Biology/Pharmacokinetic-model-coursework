@@ -19,48 +19,60 @@ GAMES = {
 
 
 def run_model_demo():
-    model_parameters = {
-        "central_volume": 3000,
-        "clearance": 300,
-        "peripheral_volumes": [5000, 10000],
-        "intercompartmental_clearances": [200, 150],
-    }
-    iv_model = Model(**model_parameters, name="IV")
-    sc_model = Model(
-        **model_parameters,
-        route="sc",
-        absorption_rate=0.8,
-        name="SC",
-    )
-    protocol = Protocol().add_bolus(1000)
-    times = numpy.linspace(0, 24, 241)
-    iv_solution = iv_model.solve(protocol, times)
-    sc_solution = sc_model.solve(protocol, times)
+    """Interactive command line based implementation of the PK model"""
+    print("PK model simulation")
+    try: 
+        print("Choose drug administration route")
+        choice = input("[1] Intravenous (IV), [2] Subcutaneous (SC): ")
+        model_type = "sc" if choice == "2" else "iv"
+        print(f"{model_type} used.")
 
-    figure, (concentration_axis, depot_axis) = plt.subplots(
-        2, 1, figsize=(10, 8), sharex=True
-    )
-    plt.sca(concentration_axis)
-    compartments = ["central", "peripheral_1", "peripheral_2"]
-    iv_solution.plot(compartments=compartments)
-    sc_solution.plot(compartments=compartments)
-    concentration_axis.set_title("IV and subcutaneous concentration profiles")
+        v_c = float(input("Input central compartment volume (ml): "))
+        cl = float(input("Input clearance rate (ml/h): "))
+        if model_type == "sc": 
+            k_a = float(input("Enter absorption rate (1/h): "))
+        v_i = float(input(f"Enter compartment volume (ml): "))
+        q_i = float(input(f"Enter intercompartmental clearance (ml/h): "))
+        dose = float(input("Enter bolus dose (ng): "))
+        duration = float(input("Enter simulation duration (hrs): "))
+        protocol = Protocol().add_bolus(dose)
 
-    plt.sca(depot_axis)
-    sc_solution.plot(quantity="amount", compartments=["depot"])
-    depot_axis.set_title("Subcutaneous absorption depot")
-    depot_axis.set_xlabel("Time [h]")
-
-    figure.tight_layout()
-    plot_path = PROJECT_DIR / "pk_model_demo.png"
-    figure.savefig(plot_path, dpi=150, bbox_inches="tight")
-    plt.close()
-    print(f"Plot saved to {plot_path}")
-    if sys.platform == "darwin":
-        subprocess.run(["open", "-a", "Preview", str(plot_path)], check=True)
-    elif not webbrowser.open(plot_path.as_uri(), new=2):
-        raise RuntimeError(f"Could not open plot: {plot_path}")
-
+        model = Model(
+            central_volume=v_c,
+            clearance=cl,
+            peripheral_volumes=v_p,
+            intercompartmental_clearances=q_p,
+            absorption_rate=k_a,
+            model_type=model_type,
+        )
+        times = np.linspace(0, duration, int(duration * 10) + 1)    iv_solution = iv_model.solve(protocol, times)
+        solution = model.solve(protocol, times)
+        print("Plotting...")
+        solution.plot()
+        figure, (concentration_axis, depot_axis) = plt.subplots(
+            2, 1, figsize=(10, 8), sharex=True
+        )
+        plt.sca(concentration_axis)
+        compartments = ["central", "peripheral_1", "peripheral_2"]
+        iv_solution.plot(compartments=compartments)
+        sc_solution.plot(compartments=compartments)
+        concentration_axis.set_title("IV and subcutaneous concentration profiles")
+    
+        plt.sca(depot_axis)
+        sc_solution.plot(quantity="amount", compartments=["depot"])
+        depot_axis.set_title("Subcutaneous absorption depot")
+        depot_axis.set_xlabel("Time [h]")
+    
+        figure.tight_layout()
+        plot_path = PROJECT_DIR / "pk_model_demo.png"
+        figure.savefig(plot_path, dpi=150, bbox_inches="tight")
+        print(f"Plot saved to {plot_path}")
+        plt.show()
+        plt.close()
+    except Exception as e: 
+        print("Something went wrong, play snake instead!")
+        run_game("snake")
+    
 
 def run_game(script):
     return subprocess.run(
