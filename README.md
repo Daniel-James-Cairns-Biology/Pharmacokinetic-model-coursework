@@ -10,7 +10,7 @@ peripheral compartments. Protocols can be reused across models.
 python -m pip install .
 python -m pip install ".[dev]"
 ```
-if you wish to play snake then follow this installation
+if you wish to play snake then follow this installation (note snake requires python 3.12)
 ```bash
 python -m pip install ".[snake]"
 ```
