@@ -22,17 +22,25 @@ def run_model_demo():
     print("PK model simulation")
     try:
         print("Choose drug administration route")
-        choice = input("[1] Intravenous (IV), [2] Subcutaneous (SC) [default: 1]: " or 1)
+        choice = input(
+            "[1] Intravenous (IV), [2] Subcutaneous (SC) [default: 1]: " or 1
+        )
         model_type = "sc" if choice == "2" else "iv"
         print(f"{model_type} used.")
 
-        v_c = float(input("Input central compartment volume (ml) [default: 3000]: ") or 3000)
-        cl = float(input("Input clearance rate (ml/h) [default: 300]: ") or 300)
+        v_c = float(input(
+            "Input central compartment volume (ml) [default: 3000]: ") or 3000
+        )
+        cl = float(input(
+            "Input clearance rate (ml/h) [default: 300]: ") or 300
+        )
         if model_type == "sc":
             k_a = float(input("Enter absorption rate (1/h): [default: 0.8]: ") or 0.8)
         else:
             k_a = None
-        num_periph = int(input("Number of peripheral compartments (0, 1, or 2) [default: 1]: ") or 1)
+        num_periph = int(input(
+            "Number of peripheral compartments (0, 1, or 2) [default: 1]: ") or 1
+        )
 
         v_p = []
         q_p = []
