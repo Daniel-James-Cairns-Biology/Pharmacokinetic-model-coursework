@@ -35,7 +35,9 @@ def run_model_demo():
             "Input clearance rate (ml/h) [default: 300]: ") or 300
         )
         if model_type == "sc":
-            k_a = float(input("Enter absorption rate (1/h): [default: 0.8]: ") or 0.8)
+            k_a = float(input(
+                "Enter absorption rate (1/h): [default: 0.8]: ") or 0.8
+        )
         else:
             k_a = None
         num_periph = int(input(
@@ -46,12 +48,20 @@ def run_model_demo():
         q_p = []
 
         for i in range(num_periph):
-            v_i = float(input(f"Peripheral {i+1} Volume V_{i+1} (mL) [1000]: ") or 1000)
-            q_i = float(input(f"Peripheral {i+1} Clearance Q_{i+1} (mL/h) [100]: ") or 100)
+            v_i = float(input(
+                f"Peripheral {i+1} Volume V_{i+1} (mL) [1000]: ") or 1000
+            )
+            q_i = float(input(
+                f"Peripheral {i+1} Clearance Q_{i+1} (mL/h) [100]: ") or 100
+            )
             v_p.append(v_i)
             q_p.append(q_i)
-        dose = float(input("Enter bolus dose (ng) [default: 1000]: ") or 1000)
-        duration = float(input("Enter simulation duration (hrs) [default: 24]: ") or 24)
+        dose = float(input(
+            "Enter bolus dose (ng) [default: 1000]: ") or 1000
+        )
+        duration = float(input(
+            "Enter simulation duration (hrs) [default: 24]: ") or 24
+        )
         protocol = Protocol().add_bolus(dose)
 
         model = Model(
