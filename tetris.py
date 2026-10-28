@@ -3,7 +3,6 @@
 import random
 import tkinter as tk
 
-
 CELL_SIZE = 30
 BOARD_WIDTH = 10
 BOARD_HEIGHT = 20

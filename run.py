@@ -2,7 +2,6 @@
 
 import subprocess
 import sys
-import webbrowser
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -21,7 +20,7 @@ GAMES = {
 def run_model_demo():
     """Interactive command line based implementation of the PK model"""
     print("PK model simulation")
-    try: 
+    try:
         print("Choose drug administration route")
         choice = input("[1] Intravenous (IV), [2] Subcutaneous (SC) [default: 1]: " or 1)
         model_type = "sc" if choice == "2" else "iv"
@@ -29,15 +28,15 @@ def run_model_demo():
 
         v_c = float(input("Input central compartment volume (ml) [default: 3000]: ") or 3000)
         cl = float(input("Input clearance rate (ml/h) [default: 300]: ") or 300)
-        if model_type == "sc": 
+        if model_type == "sc":
             k_a = float(input("Enter absorption rate (1/h): [default: 0.8]: ") or 0.8)
-        else: 
+        else:
             k_a = None
         num_periph = int(input("Number of peripheral compartments (0, 1, or 2) [default: 1]: ") or 1)
-        
+
         v_p = []
         q_p = []
-        
+
         for i in range(num_periph):
             v_i = float(input(f"Peripheral {i+1} Volume V_{i+1} (mL) [1000]: ") or 1000)
             q_i = float(input(f"Peripheral {i+1} Clearance Q_{i+1} (mL/h) [100]: ") or 100)
@@ -55,7 +54,7 @@ def run_model_demo():
             route=model_type,
             absorption_rate=k_a,
         )
-        times = np.linspace(0, duration, int(duration * 10) + 1)    
+        times = np.linspace(0, duration, int(duration * 10) + 1)
         solution = model.solve(protocol, times)
         print("Plotting...")
         solution.plot()
@@ -63,27 +62,27 @@ def run_model_demo():
             2, 1, figsize=(10, 8), sharex=True
         )
         plt.sca(concentration_axis)
-        compartments = ["central"] + [f"peripheral_{i+1}" for i in range(num_periph)]        
+        compartments = ["central"] + [f"peripheral_{i+1}" for i in range(num_periph)]
         solution.plot(compartments=compartments)
 
         concentration_axis.set_title("IV and subcutaneous concentration profiles")
-    
+
         if model_type == "sc" or k_a is not None:
             plt.sca(depot_axis)
             solution.plot(quantity="amount", compartments=["depot"])
             depot_axis.set_title("Subcutaneous absorption depot")
             depot_axis.set_xlabel("Time [h]")
-    
+
         figure.tight_layout()
         plot_path = PROJECT_DIR / "pk_model_demo.png"
         figure.savefig(plot_path, dpi=150, bbox_inches="tight")
         print(f"Plot saved to {plot_path}")
         plt.show()
         plt.close()
-    except Exception as e: 
+    except Exception:
         print("Something went wrong, play snake instead!")
         run_game("snake.py")
-    
+
 
 def run_game(script):
     return subprocess.run(
