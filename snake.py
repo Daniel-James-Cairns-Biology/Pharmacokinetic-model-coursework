@@ -34,7 +34,7 @@ class Snake:
     def get_pos(self):
         return self.body[0].pos
     def change_direction(self, new_direction):
-        if new_direction[0] != -self.direction[0] or new_direction[1] != -self.direction[1]:
+        if new_direction[0] != -self.direction[0] or new_direction[1] != -self.direction[1]: #noqa: E501
             self.direction = new_direction
     def get_new_pos(self):
         curr_x, curr_y = self.body[0].pos
