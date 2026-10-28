@@ -23,17 +23,17 @@ def run_model_demo():
     print("PK model simulation")
     try: 
         print("Choose drug administration route")
-        choice = input("[1] Intravenous (IV), [2] Subcutaneous (SC): ")
+        choice = input("[1] Intravenous (IV), [2] Subcutaneous (SC) [default: 1]: " or 1)
         model_type = "sc" if choice == "2" else "iv"
         print(f"{model_type} used.")
 
-        v_c = float(input("Input central compartment volume (ml): "))
-        cl = float(input("Input clearance rate (ml/h): "))
+        v_c = float(input("Input central compartment volume (ml) [default: 3000]: ") or 3000)
+        cl = float(input("Input clearance rate (ml/h) [default: 300]: ") or 300)
         if model_type == "sc": 
-            k_a = float(input("Enter absorption rate (1/h): "))
+            k_a = float(input("Enter absorption rate (1/h): [default: 0.8]: ") or 0.8)
         else: 
             k_a = None
-        num_periph = int(input("Number of peripheral compartments (0, 1, or 2) [1]: ") or 1)
+        num_periph = int(input("Number of peripheral compartments (0, 1, or 2) [default: 1]: ") or 1)
         
         v_p = []
         q_p = []
@@ -43,8 +43,8 @@ def run_model_demo():
             q_i = float(input(f"Peripheral {i+1} Clearance Q_{i+1} (mL/h) [100]: ") or 100)
             v_p.append(v_i)
             q_p.append(q_i)
-        dose = float(input("Enter bolus dose (ng): "))
-        duration = float(input("Enter simulation duration (hrs): "))
+        dose = float(input("Enter bolus dose (ng) [default: 1000]: ") or 1000)
+        duration = float(input("Enter simulation duration (hrs) [default: 24]: ") or 24)
         protocol = Protocol().add_bolus(dose)
 
         model = Model(
