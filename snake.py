@@ -11,7 +11,7 @@ class Bone:
         self.pos = pos
         self.size = size
     def draw(self, screen, color=(20, 255, 20)):
-        pygame.draw.rect(screen, color, (self.pos[0], self.pos[1], self.size, self.size))
+        pygame.draw.rect(screen, color, (self.pos[0], self.pos[1], self.size, self.size)) #noqa: E501
 
 
 class Food:
