@@ -25,8 +25,8 @@ def run_model_demo():
     try:
         print("Choose drug administration route")
         init_temp = []
-        choice = ( 
-            input(f"[1] Intravenous (IV), [2] Subcutaneous (SC) [default: {init_vect[0]}]: ") 
+        choice = (
+            input(f"[1] Intravenous (IV), [2] Subcutaneous (SC) [default: {init_vect[0]}]: ")
             or init_vect[0]
         )
         init_temp = [0]*9 if choice == "2" or 2 else [0]*8
@@ -35,7 +35,7 @@ def run_model_demo():
         print(f"{model_type} used.")
 
         v_c = float(
-            input(f"Input central compartment volume (ml) [default: {init_vect[1]}]: ") 
+            input(f"Input central compartment volume (ml) [default: {init_vect[1]}]: ")
             or init_vect[1]
         )
         init_temp[1]=v_c
