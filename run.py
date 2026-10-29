@@ -13,58 +13,82 @@ PROJECT_DIR = Path(__file__).resolve().parent
 GAMES = {
     "2": ("Tetris", "tetris.py"),
     "3": ("Sandtris", "sandtris.py"),
-    "4": ("Brickbreaker", "brickbreaker.py"),
-    "5": ("Snake", "snake.py"),
-    "6": ("Therapist", "therapist.py"),
+    "4": ("Snake", "snake.py"),
 }
 
-
+init_vect = [1, 3000, 300, 1, 1000, 100, 1000, 24, 0.8]
 def run_model_demo():
     """Interactive command line based implementation of the PK model"""
     print("PK model simulation")
     try:
         print("Choose drug administration route")
+        init_temp = []
         choice = input(
-            "[1] Intravenous (IV), [2] Subcutaneous (SC) [default: 1]: " or 1
-        )
-        model_type = "sc" if choice == "2" else "iv"
+            f"[1] Intravenous (IV), [2] Subcutaneous (SC) [default: {init_vect[0]}]: ") or init_vect[0]
+        
+        init_temp = [0]*9 if choice == "2" or 2 else [0]*8    
+        init_temp[0] = 2 if choice == "2" or 2 else 1
+        model_type = "SC" if choice == "2" or 2 else "IV"
         print(f"{model_type} used.")
 
         v_c = float(input(
-            "Input central compartment volume (ml) [default: 3000]: ") or 3000
+            f"Input central compartment volume (ml) [default: {init_vect[1]}]: ") or init_vect[1]
         )
+        init_temp[1]=v_c
+        
         cl = float(input(
-            "Input clearance rate (ml/h) [default: 300]: ") or 300
+            f"Input clearance rate (ml/h) [default: {init_vect[2]}]: ") or init_vect[2]
         )
-        if model_type == "sc":
+        init_temp[2] = cl        
+        if model_type == "SC":
             k_a = float(input(
-                "Enter absorption rate (1/h): [default: 0.8]: ") or 0.8
+                f"Enter absorption rate (1/h): [default: {init_vect[8]}]: ")  or init_vect[8]
         )
+            init_temp[8] = k_a
         else:
             k_a = None
         num_periph = int(input(
-            "Number of peripheral compartments (0, 1, or 2) [default: 1]: ") or 1
+            f"Number of peripheral compartments (0, 1, or 2) [default: {init_vect[3]}]: ")  or init_vect[3]
         )
-
+        init_temp[3] = num_periph
         v_p = []
         q_p = []
 
         for i in range(num_periph):
             v_i = float(input(
-                f"Peripheral {i+1} Volume V_{i+1} (mL) [1000]: ") or 1000
+                f"Peripheral {i+1} Volume V_{i+1} (mL) [default: {init_vect[4]}]: ") or init_vect[4]
             )
             q_i = float(input(
-                f"Peripheral {i+1} Clearance Q_{i+1} (mL/h) [100]: ") or 100
+                f"Peripheral {i+1} Clearance Q_{i+1} (mL/h) [default: {init_vect[5]}]: ") or init_vect[5]
             )
             v_p.append(v_i)
             q_p.append(q_i)
+        
+        if num_periph == 0:
+            init_temp[4] = init_vect[4]
+            init_temp[5] = init_vect[5]
+        else:
+            init_temp[4] = v_p[num_periph-1]
+            init_temp[5] = q_p[num_periph-1]
+        
         dose = float(input(
-            "Enter bolus dose (ng) [default: 1000]: ") or 1000
+           f"Enter bolus dose (ng)[default: {init_vect[6]}]: ") or init_vect[6]
         )
+        init_temp[6] = dose
+        
         duration = float(input(
-            "Enter simulation duration (hrs) [default: 24]: ") or 24
+            f"Enter simulation duration (hrs) [default: {init_vect[7]}]: ") or init_vect[7]
         )
+        init_temp[7] = duration
+        
+        change_defaults = input("Save conditions as default? [y/n]") or "y"
+        if change_defaults == "y" or "Y":
+            print("Conditions saved.")
+            print(init_temp)
+            init_vect[0:len(init_temp)] = init_temp
+             
         protocol = Protocol().add_bolus(dose)
+        print(init_vect)
 
         model = Model(
             central_volume=v_c,
@@ -85,12 +109,12 @@ def run_model_demo():
         compartments = ["central"] + [f"peripheral_{i+1}" for i in range(num_periph)]
         solution.plot(compartments=compartments)
 
-        concentration_axis.set_title("IV and subcutaneous concentration profiles")
+        concentration_axis.set_title("IV and SC concentration profiles")
 
-        if model_type == "sc" or k_a is not None:
+        if model_type == "SC" or k_a is not None:
             plt.sca(depot_axis)
             solution.plot(quantity="amount", compartments=["depot"])
-            depot_axis.set_title("Subcutaneous absorption depot")
+            depot_axis.set_title("Subcutaneous Absorption Depot")
             depot_axis.set_xlabel("Time [h]")
 
         figure.tight_layout()
@@ -116,12 +140,10 @@ def main():
     while True:
         print(
             "\nChoose what to run:\n"
-            "1. Pharmacokinetic model demo\n"
+            "1. Pharmacokinetic Model Demo\n"
             "2. Tetris\n"
             "3. Sandtris\n"
-            "4. Brickbreaker \n"
-            "5. Snake (requires Pygame)\n"
-            "6. Therapist\n"
+            "4. Snake (requires Pygame)\n"
             "q. Quit"
         )
         choice = input("> ").strip().lower()
@@ -137,7 +159,7 @@ def main():
             if return_code:
                 print(f"{name} exited with status {return_code}.")
         else:
-            print("Choose 1, 2, 3, 4, 5, 6 or q.")
+            print("Choose 1, 2, 3, 4, or q.")
 
 
 if __name__ == "__main__":
