@@ -196,7 +196,9 @@ class BrickBreaker:
 
         if self.rectangles_overlap(self.ball.item, self.paddle.item):
             self.ball.velocity[1] = -abs(self.ball.velocity[1])
-            paddle_left, _top, paddle_right, _bottom = self.canvas.coords(self.paddle.item)
+            paddle_left, _top, paddle_right, _bottom = (
+                self.canvas.coords(self.paddle.item)
+            )
             paddle_centre = (paddle_left + paddle_right) / 2
             offset = (self.ball.pos[0] - paddle_centre) / (self.paddle.width / 2)
             self.ball.velocity[0] = 5 * max(-1, min(offset, 1))
@@ -205,7 +207,9 @@ class BrickBreaker:
             self.canvas.move(self.ball.item, 0, -10)
 
         for brick in self.bricks:
-            if not brick.destroyed and self.rectangles_overlap(self.ball.item, brick.item):
+            if not brick.destroyed and self.rectangles_overlap(
+                self.ball.item, brick.item
+            ):
                 brick.hit()
                 self.score += 1
                 self.ball.velocity[1] *= -1
