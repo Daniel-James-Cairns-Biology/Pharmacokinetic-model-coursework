@@ -25,8 +25,8 @@ def run_model_demo():
         init_temp = []
         choice = input(
             f"[1] Intravenous (IV), [2] Subcutaneous (SC) [default: {init_vect[0]}]: ") or init_vect[0]
-        
-        init_temp = [0]*9 if choice == "2" or 2 else [0]*8    
+
+        init_temp = [0]*9 if choice == "2" or 2 else [0]*8
         init_temp[0] = 2 if choice == "2" or 2 else 1
         model_type = "SC" if choice == "2" or 2 else "IV"
         print(f"{model_type} used.")
@@ -35,11 +35,11 @@ def run_model_demo():
             f"Input central compartment volume (ml) [default: {init_vect[1]}]: ") or init_vect[1]
         )
         init_temp[1]=v_c
-        
+
         cl = float(input(
             f"Input clearance rate (ml/h) [default: {init_vect[2]}]: ") or init_vect[2]
         )
-        init_temp[2] = cl        
+        init_temp[2] = cl
         if model_type == "SC":
             k_a = float(input(
                 f"Enter absorption rate (1/h): [default: {init_vect[8]}]: ")  or init_vect[8]
@@ -63,30 +63,30 @@ def run_model_demo():
             )
             v_p.append(v_i)
             q_p.append(q_i)
-        
+
         if num_periph == 0:
             init_temp[4] = init_vect[4]
             init_temp[5] = init_vect[5]
         else:
             init_temp[4] = v_p[num_periph-1]
             init_temp[5] = q_p[num_periph-1]
-        
+
         dose = float(input(
            f"Enter bolus dose (ng)[default: {init_vect[6]}]: ") or init_vect[6]
         )
         init_temp[6] = dose
-        
+
         duration = float(input(
             f"Enter simulation duration (hrs) [default: {init_vect[7]}]: ") or init_vect[7]
         )
         init_temp[7] = duration
-        
+
         change_defaults = input("Save conditions as default? [y/n]") or "y"
         if change_defaults == "y" or "Y":
             print("Conditions saved.")
             print(init_temp)
             init_vect[0:len(init_temp)] = init_temp
-             
+
         protocol = Protocol().add_bolus(dose)
         print(init_vect)
 
