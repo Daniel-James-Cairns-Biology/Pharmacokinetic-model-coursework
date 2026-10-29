@@ -117,7 +117,9 @@ def main():
             "1. Pharmacokinetic model demo\n"
             "2. Tetris\n"
             "3. Sandtris\n"
-            "4. Snake (requires Pygame)\n"
+            "4. Brickbreaker \n"
+            "5. Snake (requires Pygame)\n"
+            "6. Therapist"
             "q. Quit"
         )
         choice = input("> ").strip().lower()
@@ -133,7 +135,7 @@ def main():
             if return_code:
                 print(f"{name} exited with status {return_code}.")
         else:
-            print("Choose 1, 2, 3, 4, or q.")
+            print("Choose 1, 2, 3, 4, 5, 6 or q.")
 
 
 if __name__ == "__main__":
