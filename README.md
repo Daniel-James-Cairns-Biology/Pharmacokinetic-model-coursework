@@ -25,6 +25,15 @@ solution.plot()
 ```
 Run checks with `pytest`, `pytest --cov=pk_model`, and `ruff check .`. 
 
+## Package breakdown
+
+| Code                                                  | Description                         |                                                                                                                    
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | 
+| run.py | Used to call all other functions, run this locally and follow the steps provided.|
+| pk_model.py   | This contains the ODE solver.|
+| pyproject.toml     | Python setup to make package pip installable.|
+| brick breaker.py, sanders.py, snake.py, tetris.py, therapist.py | Additional code we included for fun :)|
+
 ## Variables
 
 Our variables are just the drug density in each compartment. We denote them as:
