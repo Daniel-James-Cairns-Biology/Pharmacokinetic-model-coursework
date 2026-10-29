@@ -121,7 +121,7 @@ def main():
             "3. Sandtris\n"
             "4. Brickbreaker \n"
             "5. Snake (requires Pygame)\n"
-            "6. Therapist"
+            "6. Therapist\n"
             "q. Quit"
         )
         choice = input("> ").strip().lower()
