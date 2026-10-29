@@ -2,32 +2,155 @@ import random
 import re
 
 REFLECTIONS = {
-    "i": "you", "me": "you", "my": "your", "mine": "yours",
-    "myself": "yourself", "you": "I", "your": "my", "yours": "mine",
-    "yourself": "myself", "am": "are", "are": "am",
+    "i": "you",
+    "me": "you",
+    "my": "your",
+    "mine": "yours",
+    "myself": "yourself",
+    "you": "I",
+    "your": "my",
+    "yours": "mine",
+    "yourself": "myself",
+    "am": "are",
+    "are": "am",
 }
 
 RULES = [
-    ("sorry", 5, [(r".*\bsorry\b.*", ["Please don't apologise.", "Apologies are not necessary."])]),
-    ("remember", 5, [(r".*\bremember\b(.+)", ["Do you often think about(1)?", "What else comes to mind about(1)?"])]),
-    ("dream", 4, [(r".*\bdream\b(.+)", ["What does that dream suggest to you?", "Do you dream often?"])]),
-    ("mother|father|brother|sister|family", 5, [(r".*", ["Tell me more about your family.", "How does that make you feel about your family?"])]),
-    ("you are|you're", 4, [(r".*(?:you are|you're) (.+)", ["What makes you think I am(1)?", "Why do you say I am(1)?"])]),
-    ("i am|i'm", 4, [(r".*(?:i am|i'm) (.+)", ["How long have you been(1)?", "Why do you say you are(1)?"])]),
-    ("i need", 4, [(r".*\bi need (.+)", ["Why do you need(1)?", "Would getting(1) change how you feel?"])]),
-    ("i want", 4, [(r".*\bi want (.+)", ["What would having(1) do for you?", "Why do you want(1)?"])]),
-    ("because", 3, [(r".*\bbecause (.+)", ["Is that the real reason?", "What other reasons might explain it?"])]),
-    ("why", 3, [(r".*\bwhy\b(.+)", ["Why do you think that is?", "What answer would satisfy you?"])]),
+    (
+        "sorry",
+        5,
+        [
+            (
+                r".*\bsorry\b.*",
+                ["Please don't apologise.", "Apologies are not necessary."],
+            )
+        ],
+    ),
+    (
+        "remember",
+        5,
+        [
+            (
+                r".*\bremember\b(.+)",
+                ["Do you often think about(1)?", "What else comes to mind about(1)?"],
+            )
+        ],
+    ),
+    (
+        "dream",
+        4,
+        [
+            (
+                r".*\bdream\b(.+)",
+                ["What does that dream suggest to you?", "Do you dream often?"],
+            )
+        ],
+    ),
+    (
+        "mother|father|brother|sister|family",
+        5,
+        [
+            (
+                r".*",
+                [
+                    "Tell me more about your family.",
+                    "How does that make you feel about your family?",
+                ],
+            )
+        ],
+    ),
+    (
+        "you are|you're",
+        4,
+        [
+            (
+                r".*(?:you are|you're) (.+)",
+                ["What makes you think I am(1)?", "Why do you say I am(1)?"],
+            )
+        ],
+    ),
+    (
+        "i am|i'm",
+        4,
+        [
+            (
+                r".*(?:i am|i'm) (.+)",
+                ["How long have you been(1)?", "Why do you say you are(1)?"],
+            )
+        ],
+    ),
+    (
+        "i need",
+        4,
+        [
+            (
+                r".*\bi need (.+)",
+                ["Why do you need(1)?", "Would getting(1) change how you feel?"],
+            )
+        ],
+    ),
+    (
+        "i want",
+        4,
+        [
+            (
+                r".*\bi want (.+)",
+                ["What would having(1) do for you?", "Why do you want(1)?"],
+            )
+        ],
+    ),
+    (
+        "because",
+        3,
+        [
+            (
+                r".*\bbecause (.+)",
+                ["Is that the real reason?", "What other reasons might explain it?"],
+            )
+        ],
+    ),
+    (
+        "why",
+        3,
+        [
+            (
+                r".*\bwhy\b(.+)",
+                ["Why do you think that is?", "What answer would satisfy you?"],
+            )
+        ],
+    ),
     ("yes|yep|yeah", 3, [(r".*", ["Please continue.", "How certain are you?"])]),
     ("no|nope", 3, [(r".*", ["You seem quite sure of that.", "Why not?"])]),
-    ("hello|hi|hey", 3, [(r".*", ["Hello. How are you feeling today?", "Hi. What would you like to talk about?"])]),
-    ("always", 2, [(r".*", ["Can you think of a specific example?", "When?", "Really, always?"])]),
-    ("i", 1, [(r".*\bi\b(.+)", ["You say(1).", "Can you explain what you mean by(1)?"])]),
+    (
+        "hello|hi|hey",
+        3,
+        [
+            (
+                r".*",
+                [
+                    "Hello. How are you feeling today?",
+                    "Hi. What would you like to talk about?",
+                ],
+            )
+        ],
+    ),
+    (
+        "always",
+        2,
+        [(r".*", ["Can you think of a specific example?", "When?", "Really, always?"])],
+    ),
+    (
+        "i",
+        1,
+        [(r".*\bi\b(.+)", ["You say(1).", "Can you explain what you mean by(1)?"])],
+    ),
 ]
 
 DEFAULT_RESPONSES = [
-    "Please tell me more.", "Let's continue. What happens next?",
-    "How does that make you feel?", "Can you say more about that?",
+    "Please tell me more.",
+    "Let's continue. What happens next?",
+    "How does that make you feel?",
+    "Can you say more about that?",
     "What does that suggest to you?",
 ]
 
@@ -41,7 +164,9 @@ def normalise(text):
 
 
 def reflect_fragment(fragment):
-    result = " ".join(REFLECTIONS.get(word, word) for word in normalise(fragment).split())
+    result = " ".join(
+        REFLECTIONS.get(word, word) for word in normalise(fragment).split()
+    )
     result = result.strip(" ,.!?")
     return "" if not result else " " + result
 
@@ -50,7 +175,9 @@ def substitute(response, match):
     if match is None:
         return response
     for index in range(1, len(match.groups()) + 1):
-        response = response.replace(f"({index})", reflect_fragment(match.group(index) or ""))
+        response = response.replace(
+            f"({index})", reflect_fragment(match.group(index) or "")
+        )
     return response
 
 
