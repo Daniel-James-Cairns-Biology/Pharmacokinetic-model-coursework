@@ -13,7 +13,9 @@ PROJECT_DIR = Path(__file__).resolve().parent
 GAMES = {
     "2": ("Tetris", "tetris.py"),
     "3": ("Sandtris", "sandtris.py"),
-    "4": ("Snake", "snake.py"),
+    "4": ("Brickbreaker", "brickbreaker.py"),
+    "5": ("Snake", "snake.py"),
+    "6": ("Therapist", "therapist.py"),
 }
 
 
