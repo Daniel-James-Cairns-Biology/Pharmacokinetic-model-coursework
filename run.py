@@ -27,7 +27,7 @@ def run_model_demo():
         init_temp = []
         choice = (
             input(
-                f"[1] Intravenous (IV), [2] Subcutaneous (SC) [default: {init_vect[0]}]: "
+                f"[1] Intravenous (IV), [2] Subcutaneous (SC) [default: {init_vect[0]}]: " # noqa: E501
             )
             or init_vect[0]
         )
@@ -57,7 +57,7 @@ def run_model_demo():
             k_a = None
         num_periph = int(
             input(
-                f"Number of peripheral compartments (0, 1, or 2) [default: {init_vect[3]}]: "
+                f"Number of peripheral compartments (0, 1, or 2) [default: {init_vect[3]}]: " # noqa: E501
             )
             or init_vect[3]
         )
@@ -74,7 +74,7 @@ def run_model_demo():
             )
             q_i = float(
                 input(
-                    f"Peripheral {i+1} Clearance Q_{i+1} (mL/h) [default: {init_vect[5]}]: "
+                    f"Peripheral {i+1} Clearance Q_{i+1} (mL/h) [default: {init_vect[5]}]: " # noqa: E501
                 )
                 or init_vect[5]
             )
