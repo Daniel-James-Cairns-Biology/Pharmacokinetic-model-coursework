@@ -26,7 +26,9 @@ def run_model_demo():
         print("Choose drug administration route")
         init_temp = []
         choice = (
-            input(f"[1] Intravenous (IV), [2] Subcutaneous (SC) [default: {init_vect[0]}]: ")
+            input(
+                f"[1] Intravenous (IV), [2] Subcutaneous (SC) [default: {init_vect[0]}]: "
+            )
             or init_vect[0]
         )
         init_temp = [0]*9 if choice == "2" or 2 else [0]*8
@@ -54,7 +56,9 @@ def run_model_demo():
         else:
             k_a = None
         num_periph = int(
-            input(f"Number of peripheral compartments (0, 1, or 2) [default: {init_vect[3]}]: ")
+            input(
+                f"Number of peripheral compartments (0, 1, or 2) [default: {init_vect[3]}]: "
+            )
             or init_vect[3]
         )
         init_temp[3] = num_periph
@@ -63,11 +67,15 @@ def run_model_demo():
 
         for i in range(num_periph):
             v_i = float(
-                input(f"Peripheral {i+1} Volume V_{i+1} (mL) [default: {init_vect[4]}]: ")
+                input(
+                    f"Peripheral {i+1} Volume V_{i+1} (mL) [default: {init_vect[4]}]: "
+                )
                 or init_vect[4]
             )
             q_i = float(
-                input(f"Peripheral {i+1} Clearance Q_{i+1} (mL/h) [default: {init_vect[5]}]: ")
+                input(
+                    f"Peripheral {i+1} Clearance Q_{i+1} (mL/h) [default: {init_vect[5]}]: "
+                )
                 or init_vect[5]
             )
             v_p.append(v_i)
