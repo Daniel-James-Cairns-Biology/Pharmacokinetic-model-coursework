@@ -140,6 +140,205 @@ RULES = [
         [(r".*", ["Can you think of a specific example?", "When?", "Really, always?"])],
     ),
     (
+        "computer|computers|machine|machines",
+        50,
+        [
+            (
+                r".*",
+                [
+                    "Do computers worry you?",
+                    "Why do you mention computers?",
+                    "What do you think machines have to do with your problem?",
+                    "Don't you think computers can help people?",
+                    "What about machines worries you?",
+                ],
+            )
+        ],
+    ),
+    (
+        "perhaps|maybe",
+        3,
+        [
+            (
+                r".*",
+                [
+                    "You don't seem quite certain.",
+                    "Why the uncertain tone?",
+                    "Can't you be more positive?",
+                    "You aren't sure.",
+                    "Don't you know?",
+                ],
+            )
+        ],
+    ),
+    (
+        "if",
+        3,
+        [
+            (
+                r".*\bif (.+)",
+                [
+                    "Do you think it's likely that(1)?",
+                    "Do you wish that(1)?",
+                    "What do you think about(1)?",
+                    "Really,(1)?",
+                ],
+            )
+        ],
+    ),
+    (
+        "alike|same",
+        10,
+        [
+            (
+                r".*",
+                [
+                    "In what way?",
+                    "What resemblance do you see?",
+                    "What does that similarity suggest to you?",
+                    "What other connections do you see?",
+                    "Could there really be some connection?",
+                ],
+            )
+        ],
+    ),
+    (
+        "am",
+        4,
+        [
+            (
+                r".*\bare you (.+)",
+                [
+                    "Do you believe you are(1)?",
+                    "Would you want to be(1)?",
+                    "What would it mean if you were(1)?",
+                ],
+            ),
+            (
+                r".*\b(am|i am)\b.*",
+                ["Why do you say 'am'?", "I don't understand that."],
+            ),
+        ],
+    ),
+    (
+        "are",
+        3,
+        [
+            (
+                r".*\bare i (.+)",
+                [
+                    "Why are you interested in whether I am(1)?",
+                    "Would you prefer if I weren't(1)?",
+                    "Perhaps I am(1) in your fantasies.",
+                ],
+            ),
+            (
+                r".*\bare (.+)",
+                [
+                    "Did you think they might not be(1)?",
+                    "Would you like it if they were not(1)?",
+                    "What if they were not(1)?",
+                    "Possibly they are(1).",
+                ],
+            ),
+        ],
+    ),
+    (
+        "was",
+        2,
+        [
+            (
+                r".*\bwas you (.+)",
+                [
+                    "What if you were(1)?",
+                    "Do you think you were(1)?",
+                    "What would it mean if you were(1)?",
+                ],
+            ),
+            (
+                r".*\bwas i (.+)",
+                [
+                    "Would you like to believe I was(1)?",
+                    "What suggests that I was(1)?",
+                    "Perhaps I was(1).",
+                ],
+            ),
+            (
+                r".*\bwas\b.*",
+                ["Were you really?", "Why do you tell me about that now?"],
+            ),
+        ],
+    ),
+    (
+        "my",
+        2,
+        [
+            (
+                r".*\bmy (.+)",
+                [
+                    "Why do you say your(1)?",
+                    "Does that suggest anything else which belongs to you?",
+                    "Is it important to you that it is your(1)?",
+                ],
+            )
+        ],
+    ),
+    (
+        "can",
+        3,
+        [
+            (
+                r".*\bcan i (.+)",
+                [
+                    "You believe I can(1), don't you?",
+                    "You want me to be able to(1).",
+                    "Perhaps you would like to be able to(1) yourself.",
+                ],
+            ),
+            (
+                r".*\bcan you (.+)",
+                [
+                    "Whether or not you can(1) depends on you more than me.",
+                    "Do you want to be able to(1)?",
+                    "Perhaps you don't want to(1).",
+                ],
+            ),
+        ],
+    ),
+    (
+        "what|how|when",
+        2,
+        [
+            (
+                r".*",
+                [
+                    "Why do you ask?",
+                    "Does that question interest you?",
+                    "What is it you really want to know?",
+                    "Are such questions much on your mind?",
+                    "What answer would please you most?",
+                    "What do you think?",
+                    "What comes to your mind when you ask that?",
+                ],
+            )
+        ],
+    ),
+    (
+        "everyone|everybody|nobody|noone",
+        2,
+        [
+            (
+                r".*",
+                [
+                    "Can you think of anyone in particular?",
+                    "Who, for example?",
+                    "You are thinking of a very special person.",
+                    "Who do you think you're talking about?",
+                ],
+            )
+        ],
+    ),
+    (
         "i",
         1,
         [(r".*\bi\b(.+)", ["You say(1).", "Can you explain what you mean by(1)?"])],
